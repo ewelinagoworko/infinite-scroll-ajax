@@ -47,20 +47,42 @@ function ajax(ajaxOptions) {
 	httpReq.send();	
 }
 
-//to co powyzej, to cala gotowa funkcja do ajaxa w czystym javascript tzw. obsluga zapytania ajax w czystym javascript, jedyne co bedziemy zmieniac, to te dane przy wywolaniu funkcji ajax
 
-//wywolujemy funkcje ajax:
+//pobieranie kolejnych danych bez konca w zaleznosci od tego, ze scrollujemy strone do dolu:
 
-
-ajax({
-	type: 'GET',
-	url: 'http://echo.jsontest.com/userId/108/userName/Akademia108/userURL/akademia108.pl',
-	onSuccess: function(response) {
-		console.log('hurra, pobrałam dane ' + response);
-	},
-	onError: function(status) { //w przypadku, gdy pojawi sie błąd - to wywołaj alert
-		alert('Połączenie o statusie ' + status);
-    }
+window.onscroll = function() {
 	
-});
+	if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight) {
+		ajax({
+			type: 'GET',
+			url: 'https://jsonplaceholder.typicode.com/users',
+			onSuccess: function(response) {
+			
+			var jsonObj = JSON.parse(response);
+				
+			console.log(jsonObj[0]);
+				
+			for (var i = 0; i<jsonObj.length; i++) {
+				
+				var parID = document.createElement('p');
+				var parName = document.createElement('p');
+				var parURL = document.createElement('p');
+
+				parID.innerHTML = "User ID " + jsonObj[i].id;
+				parName.innerHTML = "User Name " + jsonObj[i].name;
+				parURL.innerHTML = "User Email " + jsonObj[i].email;
+
+				document.body.appendChild(parID);
+				document.body.appendChild(parName);
+				document.body.appendChild(parURL);
+			 }
+		
+			
+		   }
+	
+		});
+	 }
+	
+	
+}
 
